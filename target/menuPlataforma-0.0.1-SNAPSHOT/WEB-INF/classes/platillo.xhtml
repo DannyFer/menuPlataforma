@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta charset="UTF-8"></meta>
+	<title>Insert title here</title>
+</h:head>
+<h:body>
+	<ui:composition template="/administracion.xhtml">
+		<ui:define name="administracion">
+			<h:form id="Platillo">
+				<p:growl id="messages" showDetail="false" />
+				<p:toolbar>
+					<p:toolbarGroup>
+						<span style="font-weight: bold">PLATILLOS</span>
+					</p:toolbarGroup>
+					<p:toolbarGroup>
+						<p:commandButton value="Nuevo Platillo" icon="pi pi-plus"
+							oncomplete="PF('nuevoPlatillo').show();"
+							styleClass="ui-button-success">
+							<p:resetInput target="Platillo" />
+						</p:commandButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:dataTable id="dt-platillos" var="platillo"
+					widgetVar="dtPlatillos" value="#{platilloVista.listarPlatillos}"
+					rowKey="#{platillo.idPlatillo}" reflow="false"
+					styleClass="platillos-table">
+					<p:column headerText="Nombre" sortBy="#{platillo.nombre}"
+						filterBy="#{platillo.nombre}">
+						<h:outputText value="#{platillo.nombre}" />
+					</p:column>
+					<p:column headerText="Descripción" sortBy="#{platillo.descripcion}"
+						filterBy="#{platillo.descripcion}">
+						<h:outputText value="#{platillo.descripcion}" />
+					</p:column>
+					<p:column headerText="Precio" sortBy="#{platillo.precio}"
+						filterBy="#{platillo.precio}">
+						<h:outputText value="#{platillo.precio}" />
+					</p:column>
+					<p:column exportable="false">
+						<p:commandButton icon="pi pi-pencil" update="Platillo"
+							oncomplete="PF('nuevoPlatillo').show()"
+							styleClass="edit-button rounded-button ui-button-success"
+							process="@this">
+							<f:setPropertyActionListener value="#{platillo}"
+								target="#{platilloVista.nuevoPlatillo}" />
+							<p:resetInput target="Platillo" />
+						</p:commandButton>
+						<p:commandButton class="ui-button-warning rounded-button"
+							icon="pi pi-trash" process="@this" update="Platillo"
+							oncomplete="PF('eliminarPlatillo').show()">
+							<f:setPropertyActionListener value="#{platillo}"
+								target="#{platilloVista.eliminarPlatillo}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				<p:dialog id="dlgPlatillo" widgetVar="nuevoPlatillo"
+					header="Detalles del platillo" modal="true" showEffect="fade"
+					resizable="flase">
+					<p:outputPanel class="ui-fluid">
+						<div class="p-field">
+							<p:outputLabel>Nombre del platillo</p:outputLabel>
+
+							<p:inputText id="nombre"
+								value="#{platilloVista.nuevoPlatillo.nombre}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Descripcion</p:outputLabel>
+							<p:inputTextarea id="descripcion"
+								value="#{platilloVista.nuevoPlatillo.descripcion}" />
+						</div>
+						<div class="p-field p-col">
+							<p:outputLabel>Precio</p:outputLabel>
+							<p:inputNumber id="price"
+								value="#{platilloVista.nuevoPlatillo.precio}" symbol=" USD"
+								symbolPosition="s" decimalSeparator="." thousandSeparator="" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Gráfico</p:outputLabel>
+							<p:inputText id="grafico"
+								value="#{platilloVista.nuevoPlatillo.grafico}" />
+								<p:graphicImage style="width:30px; height:30px;" value="#{platilloVista.nuevoPlatillo.grafico}" />
+						</div>
+					</p:outputPanel>
+
+					<f:facet name="footer">
+						<p:commandButton update="Platillo" value="Guardar"
+							icon="pi pi-check" action="#{platilloVista.insertarPlatillo}"
+							oncomplete="PF('nuevoPlatillo').hide()" />
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+							onclick="PF('nuevoPlatillo').hide()" class="ui-button-secondary" />
+					</f:facet>
+				</p:dialog>
+				<p:confirmDialog widgetVar="eliminarPlatillo" showEffect="fade"
+					message="¿Desea borrar el platillo?" header="Confirmar"
+					severity="warn">
+					<p:commandButton value="Si"
+						action="#{platilloVista.eliminarPlatillo}"
+						oncomplete="PF('eliminarPlatillo').hide()" icon="pi pi-check"
+						update="Platillo" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-button-secondary"
+						onclick="PF('eliminarPlatillo').hide()" icon="pi pi-times"
+						update="Platillo" />
+				</p:confirmDialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

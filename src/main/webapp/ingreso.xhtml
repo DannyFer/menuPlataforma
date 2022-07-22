@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta charset="UTF-8"></meta>
+	<title>Insert title here</title>
+</h:head>
+<f:view contentType="text/html">
+	<h:body>
+		<ui:composition template="/principal.xhtml">
+			<ui:define name="aplicacion">
+				<h:form id="Ingreso">
+					<p:growl id="msg" showDetail="false" showSummary="true" />
+					<p:panel id="basic" header="Ingreso de usuario"
+						footer="Bienvenido al Menú Interactivo, por favor ingrese su usuario y contraseña">
+						<p:graphicImage style="width: 150px"
+							value="#{FacesContext.getCurrentInstance}/image/usuario.png" />
+						<h:panelGrid columns="2" style='text-align: left'>
+							<p:outputLabel>Usuario *</p:outputLabel>
+							<p:inputText id="cedula" value="#{empleadoVista.cedula}"
+								style="width:189px" required="true" />
+							<p:outputLabel>Contraseña *</p:outputLabel>
+							<p:password id="Contraseña" value="#{empleadoVista.contrasenia}"
+								toggleMask="true" required="true" />
+						</h:panelGrid>
+						<h:panelGrid columns="2" cellpadding="5">
+							<p:commandButton update="Ingreso" value="Ingresar"
+								action="#{empleadoVista.login}"></p:commandButton>
+						</h:panelGrid>
+					</p:panel>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</h:body>
+</f:view>
+</html>

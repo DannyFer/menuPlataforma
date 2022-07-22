@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta charset="UTF-8"></meta>
+	<title>Insert title here</title>
+</h:head>
+<h:body>
+	<ui:composition template="/administracion.xhtml">
+		<ui:define name="administracion">
+			<h:form id="Ingrediente">
+				<p:growl id="messages" showDetail="false" />
+				<p:toolbar>
+					<p:toolbarGroup>
+						<span style="font-weight: bold">INGREDIENTES</span>
+					</p:toolbarGroup>
+					<p:toolbarGroup>
+						<p:commandButton update="Ingrediente" value="Nuevo Ingrediente"
+							icon="pi pi-plus" oncomplete="PF('nuevoIngrediente').show();"
+							styleClass="ui-button-success">
+							<p:resetInput target="Ingrediente" />
+						</p:commandButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:dataTable id="dt-ingredientes" var="ingrediente"
+					widgetVar="dtIngredientes"
+					value="#{ingredienteVista.listarIngredientes}"
+					rowKey="#{ingrediente.idIngrediente}" reflow="false"
+					styleClass="ingredientes-table">
+					<p:column headerText="Nombre" sortBy="#{ingrediente.nombre}"
+						filterBy="#{ingrediente.nombre}">
+						<h:outputText value="#{ingrediente.nombre}" />
+					</p:column>
+					<p:column headerText="Descripción"
+						sortBy="#{ingrediente.descripcion}"
+						filterBy="#{ingrediente.descripcion}">
+						<h:outputText value="#{ingrediente.descripcion}" />
+					</p:column>
+					<p:column headerText="Precio" sortBy="#{ingrediente.precio}"
+						filterBy="#{ingrediente.precio}">
+						<h:outputText value="#{ingrediente.precio}" />
+					</p:column>
+					<p:column headerText="Categoría" sortBy="#{ingrediente.categoria}"
+						filterBy="#{ingrediente.categoria}">
+						<h:outputText value="#{ingrediente.fkCategoria.nombre}" />
+					</p:column>
+					<p:column exportable="false">
+						<p:commandButton icon="pi pi-pencil" update="Ingrediente"
+							oncomplete="PF('nuevoIngrediente').show()"
+							styleClass="edit-button rounded-button ui-button-success"
+							process="@this">
+							<f:setPropertyActionListener value="#{ingrediente}"
+								target="#{ingredienteVista.nuevoIngrediente}" />
+							<p:resetInput target="Ingrediente" />
+						</p:commandButton>
+						<p:commandButton class="ui-button-warning rounded-button"
+							icon="pi pi-trash" process="@this" update="Ingrediente"
+							oncomplete="PF('eliminarIngrediente').show()">
+							<f:setPropertyActionListener value="#{ingrediente}"
+								target="#{ingredienteVista.eliminarIngrediente}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:dialog id="dlgIngrediente" widgetVar="nuevoIngrediente"
+					header="Detalles del ingrediente" modal="true" showEffect="fade"
+					resizable="flase">
+					<p:outputPanel class="ui-fluid">
+						<p:outputLabel value="Seleccione la categoría" />
+						<p:selectOneMenu value="#{ingredienteVista.categoriaseleccionada}">
+							<f:selectItem itemLabel="Seleccionar Categoría" itemValue="0" />
+							<f:selectItems var="categoriaitems"
+								value="#{categoriaVista.listarCategorias}"
+								itemLabel="#{categoriaitems.nombre}"
+								itemValue="#{categoriaitems.idCategoria}" />
+						</p:selectOneMenu>
+						<div class="p-field">
+							<p:outputLabel>Nombre del ingrediente</p:outputLabel>
+							<p:inputText id="nombre"
+								value="#{ingredienteVista.nuevoIngrediente.nombre}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Descripcion</p:outputLabel>
+							<p:inputTextarea id="descripcion"
+								value="#{ingredienteVista.nuevoIngrediente.descripcion}" />
+						</div>
+						<div class="p-field p-col">
+							<p:outputLabel>Precio</p:outputLabel>
+							<p:inputNumber id="price"
+								value="#{ingredienteVista.nuevoIngrediente.precio}"
+								symbol=" USD" symbolPosition="s" decimalSeparator="."
+								thousandSeparator="" />
+						</div>
+						<!-- <div>
+							<p:outputLabel value="Gráfico" />
+							<br></br>
+							<p:fileUpload mode="simple" value="Seleccionar"
+								allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+						</div> -->
+					</p:outputPanel>
+
+					<f:facet name="footer">
+						<p:commandButton update="Ingrediente" value="Guardar"
+							icon="pi pi-check"
+							action="#{ingredienteVista.insertarIngrediente}"
+							oncomplete="PF('nuevoIngrediente').hide()" />
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+							onclick="PF('nuevoIngrediente').hide()"
+							class="ui-button-secondary" />
+					</f:facet>
+				</p:dialog>
+				<p:confirmDialog widgetVar="eliminarIngrediente" showEffect="fade"
+					message="¿Desea borrar el ingrediente?" header="Confirmar"
+					severity="warn">
+					<p:commandButton value="Si"
+						action="#{ingredienteVista.eliminarIngrediente}"
+						oncomplete="PF('eliminarIngrediente').hide()" icon="pi pi-check"
+						update="Ingrediente" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-button-secondary"
+						onclick="PF('eliminarIngrediente').hide()" icon="pi pi-times"
+						update="Ingrediente" />
+				</p:confirmDialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

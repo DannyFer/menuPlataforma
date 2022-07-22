@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta charset="UTF-8"></meta>
+	<title>Insert title here</title>
+</h:head>
+<h:body>
+	<ui:composition template="/administracion.xhtml">
+		<ui:define name="administracion">
+			<h:form id="Motorista">
+				<p:growl id="messages" showDetail="false" />
+				<p:toolbar>
+					<p:toolbarGroup>
+						<span style="font-weight: bold">MOTORISTAS</span>
+					</p:toolbarGroup>
+					<p:toolbarGroup>
+						<p:commandButton value="Nuevo Motorista" icon="pi pi-plus"
+							oncomplete="PF('nuevoMotorista').show();"
+							styleClass="ui-button-success">
+							<p:resetInput target="Motorista" />
+						</p:commandButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:dataTable id="dt-motoristas" var="motorista"
+					widgetVar="dtMotoristas" value="#{motoristaVista.listarMotoristas}"
+					rowKey="#{motorista.idMotorista}" reflow="false"
+					styleClass="motoristas-table">
+					<p:column headerText="Cédula" sortBy="#{motorista.cedula}"
+						filterBy="#{motorista.cedula}">
+						<h:outputText value="#{motorista.cedula}" />
+					</p:column>
+					<p:column headerText="Nombre" sortBy="#{motorista.nombre}"
+						filterBy="#{motorista.nombre}">
+						<h:outputText value="#{motorista.nombre}" />
+					</p:column>
+					<p:column headerText="Apellido" sortBy="#{motorista.apellido}"
+						filterBy="#{motorista.apellido}">
+						<h:outputText value="#{motorista.apellido}" />
+					</p:column>
+					<p:column headerText="Correo" sortBy="#{motorista.correo}"
+						filterBy="#{motorista.correo}">
+						<h:outputText value="#{motorista.correo}" />
+					</p:column>
+					<p:column headerText="Teléfono" sortBy="#{motorista.telefono}"
+						filterBy="#{motorista.telefono}">
+						<h:outputText value="#{motorista.telefono}" />
+					</p:column>
+					<p:column exportable="false">
+						<p:commandButton icon="pi pi-pencil" update="Motorista"
+							oncomplete="PF('nuevoMotorista').show()"
+							styleClass="edit-button rounded-button ui-button-success"
+							process="@this">
+							<f:setPropertyActionListener value="#{motorista}"
+								target="#{motoristaVista.nuevoMotorista}" />
+							<p:resetInput target="Motorista" />
+						</p:commandButton>
+						<p:commandButton class="ui-button-warning rounded-button"
+							icon="pi pi-trash" process="@this" update="Motorista"
+							oncomplete="PF('eliminarMotorista').show()">
+							<f:setPropertyActionListener value="#{motorista}"
+								target="#{motoristaVista.eliminarMotorista}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				<p:dialog id="dlgMotorista" widgetVar="nuevoMotorista"
+					header="Detalles del motorista" modal="true" showEffect="fade"
+					resizable="flase">
+					<p:outputPanel class="ui-fluid">
+						<div class="p-field">
+							<p:outputLabel>Cédula del motorista</p:outputLabel>
+							<p:inputMask id="Cédula"
+								value="#{motoristaVista.nuevoMotorista.cedula}"
+								mask="9999999999" validateMask="true" required="true" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Nombres del motorista</p:outputLabel>
+							<p:inputText id="nombres"
+								value="#{motoristaVista.nuevoMotorista.nombre}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Apellidos del motorista</p:outputLabel>
+							<p:inputText id="apellidos"
+								value="#{motoristaVista.nuevoMotorista.apellido}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Teléfono del motorista</p:outputLabel>
+							<p:inputMask id="telefono"
+								value="#{motoristaVista.nuevoMotorista.telefono}"
+								mask="9999999999" validateMask="true" required="true" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Correo del motorista</p:outputLabel>
+							<p:inputText id="correo"
+								value="#{motoristaVista.nuevoMotorista.correo}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Contraseña del motorista</p:outputLabel>
+							<p:inputText id="contraseña"
+								value="#{motoristaVista.nuevoMotorista.contrasenia}" />
+						</div>
+					</p:outputPanel>
+					<f:facet name="footer">
+						<p:commandButton update="Motorista" value="Guardar"
+							icon="pi pi-check" action="#{motoristaVista.insertarMotorista}"
+							oncomplete="PF('nuevoMotorista').hide()" />
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+							onclick="PF('nuevoMotorista').hide()" class="ui-button-secondary" />
+					</f:facet>
+				</p:dialog>
+				<p:confirmDialog widgetVar="eliminarMotorista" showEffect="fade"
+					message="¿Desea borrar el motorista?" header="Confirmar"
+					severity="warn">
+					<p:commandButton value="Si"
+						action="#{motoristaVista.eliminarMotorista}"
+						oncomplete="PF('eliminarMotorista').hide()" icon="pi pi-check"
+						update="Motorista" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-button-secondary"
+						onclick="PF('eliminarMotorista').hide()" icon="pi pi-times"
+						update="Motorista" />
+				</p:confirmDialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

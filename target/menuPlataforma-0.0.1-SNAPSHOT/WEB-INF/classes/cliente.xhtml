@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta charset="UTF-8"></meta>
+	<title>Insert title here</title>
+</h:head>
+<h:body>
+	<ui:composition template="/administracion.xhtml">
+		<ui:define name="administracion">
+			<h:form id="Cliente">
+				<p:growl id="messages" showDetail="false" />
+				<p:toolbar>
+					<p:toolbarGroup>
+						<span style="font-weight: bold">CLIENTES</span>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:dataTable id="dt-clientes" var="cliente" widgetVar="dtClientes"
+					value="#{clienteVista.listarClientes}" reflow="false"
+					styleClass="clientes-table">
+					<p:column headerText="Nombre" sortBy="#{cliente.nombre}"
+						filterBy="#{cliente.nombre}">
+						<h:outputText value="#{cliente.nombre}" />
+					</p:column>
+					<p:column headerText="Apellido" sortBy="#{cliente.apellido}"
+						filterBy="#{cliente.apellido}">
+						<h:outputText value="#{cliente.apellido}" />
+					</p:column>
+					<p:column headerText="Correo" sortBy="#{cliente.correo}"
+						filterBy="#{cliente.correo}">
+						<h:outputText value="#{cliente.correo}" />
+					</p:column>
+					<p:column headerText="Teléfono" sortBy="#{cliente.telefono}"
+						filterBy="#{cliente.telefono}">
+						<h:outputText value="#{cliente.telefono}" />
+					</p:column>
+					<p:column exportable="false">
+						<p:commandButton icon="pi pi-pencil" update="Cliente"
+							oncomplete="PF('nuevoCliente').show()"
+							styleClass="edit-button rounded-button ui-button-success"
+							process="@this">
+							<f:setPropertyActionListener value="#{cliente}"
+								target="#{clienteVista.nuevoCliente}" />
+							<p:resetInput target="Cliente" />
+						</p:commandButton>
+						<p:commandButton class="ui-button-warning rounded-button"
+							icon="pi pi-trash" process="@this" update="Cliente"
+							oncomplete="PF('eliminarCliente').show()">
+							<f:setPropertyActionListener value="#{cliente}"
+								target="#{clienteVista.eliminarCliente}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				<p:dialog id="dlgCliente" widgetVar="nuevoCliente"
+					header="Detalles del cliente" modal="true" showEffect="fade"
+					resizable="flase">
+					<p:outputPanel class="ui-fluid">
+						<div class="p-field">
+							<p:outputLabel>Nombres del cliente</p:outputLabel>
+							<p:inputText id="nombres"
+								value="#{clienteVista.nuevoCliente.nombre}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Apellidos del cliente</p:outputLabel>
+							<p:inputText id="apellidos"
+								value="#{clienteVista.nuevoCliente.apellido}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Teléfono del cliente</p:outputLabel>
+							<p:inputMask id="telefono"
+								value="#{clienteVista.nuevoCliente.telefono}" mask="9999999999"
+								validateMask="true" required="true" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Correo del cliente</p:outputLabel>
+							<p:inputText id="correo"
+								value="#{clienteVista.nuevoCliente.correo}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Contraseña del cliente</p:outputLabel>
+							<p:inputText id="contraseña"
+								value="#{clienteVista.nuevoCliente.contrasenia}" />
+						</div>
+					</p:outputPanel>
+					<f:facet name="footer">
+						<p:commandButton update="Cliente" value="Guardar"
+							icon="pi pi-check" action="#{clienteVista.insertarCliente}"
+							oncomplete="PF('nuevoCliente').hide()" />
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+							onclick="PF('nuevoCliente').hide()" class="ui-button-secondary" />
+					</f:facet>
+				</p:dialog>
+				<p:confirmDialog widgetVar="eliminarCliente" showEffect="fade"
+					message="¿Desea borrar el cliente?" header="Confirmar"
+					severity="warn">
+					<p:commandButton value="Si"
+						action="#{clienteVista.eliminarCliente}"
+						oncomplete="PF('eliminarCliente').hide()" icon="pi pi-check"
+						update="Cliente" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-button-secondary"
+						onclick="PF('eliminarCliente').hide()" icon="pi pi-times"
+						update="Cliente" />
+				</p:confirmDialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

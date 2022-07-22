@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta charset="UTF-8"></meta>
+	<title>Insert title here</title>
+</h:head>
+<h:body>
+	<ui:composition template="/administracion.xhtml">
+		<ui:define name="administracion">
+			<h:form id="Empleado">
+				<p:growl id="messages" showDetail="false" />
+				<p:toolbar>
+					<p:toolbarGroup>
+						<span style="font-weight: bold">EMPLEADOS</span>
+					</p:toolbarGroup>
+					<p:toolbarGroup>
+						<p:commandButton value="Nuevo Empleado" icon="pi pi-plus"
+							oncomplete="PF('nuevoEmpleado').show();"
+							styleClass="ui-button-success" update="Empleado">
+						</p:commandButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:dataTable id="dt-empleados" var="empleado"
+					widgetVar="dtEmpleados" value="#{empleadoVista.listarEmpleados}"
+					rowKey="#{empleado.idEmpleado}" reflow="false"
+					styleClass="empleados-table">
+
+					<p:column headerText="Cédula" sortBy="#{empleado.cedula}"
+						filterBy="#{empleado.cedula}">
+						<h:outputText value="#{empleado.cedula}" />
+					</p:column>
+					<p:column headerText="Nombre" sortBy="#{empleado.nombre}"
+						filterBy="#{empleado.nombre}">
+						<h:outputText value="#{empleado.nombre}" />
+					</p:column>
+					<p:column headerText="Apellido" sortBy="#{empleado.apellido}"
+						filterBy="#{empleado.apellido}">
+						<h:outputText value="#{empleado.apellido}" />
+					</p:column>
+					<p:column headerText="Correo" sortBy="#{empleado.correo}"
+						filterBy="#{empleado.correo}">
+						<h:outputText value="#{empleado.correo}" />
+					</p:column>
+					<p:column headerText="Teléfono" sortBy="#{empleado.telefono}"
+						filterBy="#{empleado.telefono}">
+						<h:outputText value="#{empleado.telefono}" />
+					</p:column>
+					<p:column exportable="false">
+						<p:commandButton icon="pi pi-pencil" update="Empleado"
+							oncomplete="PF('nuevoEmpleado').show()"
+							styleClass="edit-button rounded-button ui-button-success"
+							process="@this">
+							<f:setPropertyActionListener value="#{empleado}"
+								target="#{empleadoVista.nuevoEmpleado}" />
+							<p:resetInput target="Empleado" />
+						</p:commandButton>
+						<p:commandButton class="ui-button-warning rounded-button"
+							icon="pi pi-trash" process="@this" update="Empleado"
+							oncomplete="PF('eliminarEmpleado').show()">
+							<f:setPropertyActionListener value="#{empleado}"
+								target="#{empleadoVista.eliminarEmpleado}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:dialog id="dlgEmpleado" widgetVar="nuevoEmpleado"
+					header="Detalles del empleado" modal="true" showEffect="fade"
+					resizable="flase">
+
+					<p:outputPanel class="ui-fluid">
+
+						<div class="p-field">
+							<p:outputLabel>Cédula del empleado</p:outputLabel>
+							<p:inputMask id="Cédula"
+								value="#{empleadoVista.nuevoEmpleado.cedula}" mask="9999999999"
+								validateMask="true" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Nombres del empleado</p:outputLabel>
+							<p:inputText id="nombres"
+								value="#{empleadoVista.nuevoEmpleado.nombre}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Apellidos del empleado</p:outputLabel>
+							<p:inputText id="apellidos"
+								value="#{empleadoVista.nuevoEmpleado.apellido}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Teléfono del empleado</p:outputLabel>
+							<p:inputMask id="telefono"
+								value="#{empleadoVista.nuevoEmpleado.telefono}"
+								mask="9999999999" validateMask="true" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Correo del empleado</p:outputLabel>
+							<p:inputText id="correo"
+								value="#{empleadoVista.nuevoEmpleado.correo}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Contraseña del empleado</p:outputLabel>
+							<p:inputText id="contraseña"
+								value="#{empleadoVista.contrasenia}" />
+						</div>
+						<p:outputLabel value="¿Es administrador del sistema?"></p:outputLabel>
+						<div>
+							<p:toggleSwitch label="Administrador"
+								value="#{empleadoVista.nuevoEmpleado.admin}" />
+						</div>
+					</p:outputPanel>
+					<f:facet name="footer">
+						<p:commandButton value="Guardar" icon="pi pi-check"
+							action="#{empleadoVista.insertarEmpleado}"
+							oncomplete="PF('nuevoEmpleado').hide()" update="Empleado" />
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+						action="#{empleadoVista.limpiarDatos}" update="Empleado"
+							onclick="PF('nuevoEmpleado').hide()" class="ui-button-secondary" />
+					</f:facet>
+				</p:dialog>
+				<p:confirmDialog widgetVar="eliminarEmpleado" showEffect="fade"
+					message="¿Desea borrar el empleado?" header="Confirmar"
+					severity="warn">
+					<p:commandButton value="Si"
+						action="#{empleadoVista.eliminarEmpleado}"
+						oncomplete="PF('eliminarEmpleado').hide()" icon="pi pi-check"
+						update="Empleado" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-button-secondary"
+						onclick="PF('eliminarEmpleado').hide()" icon="pi pi-times"
+						update="Empleado" />
+				</p:confirmDialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

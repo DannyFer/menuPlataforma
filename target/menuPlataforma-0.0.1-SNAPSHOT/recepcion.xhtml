@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<f:view contentType="text/html">
+	<h:head>
+		<f:facet name="first">
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>Menú Interactivo</title>
+		</f:facet>
+	</h:head>
+	<style>
+html * {
+	font-size: 13px !important;
+}
+</style>
+	<h:body>
+		<center>
+			<p:card style="width: 1300px">
+				<p:carousel circular="true" autoplayInterval="3000">
+					<p:graphicImage
+						value="#{FacesContext.getCurrentInstance}/image/hamburguesa1.jpg"
+						style="width: 1150px" />
+					<p:graphicImage
+						value="#{FacesContext.getCurrentInstance}/image/hamburguesa2.jpg"
+						style="width: 1150px" />
+				</p:carousel>
+				<p:toolbar>
+					<p:toolbarGroup>
+						<p:tabMenu activeIndex="#{param.m}">
+							<p:menuitem value="Generar Orden" outcome="pedido">
+								<f:param name="m" value="0" />
+							</p:menuitem>
+							<p:menuitem value="Recibir Orden" outcome="recibir">
+								<f:param name="m" value="1" />
+							</p:menuitem>
+						</p:tabMenu>
+					</p:toolbarGroup>
+					<p:toolbarGroup>
+						<h:panelGrid columns="3">
+							<span style="font-weight: bold">BIENVENIDO RECEPCIÓN</span>
+							<p:column />
+							<p:button value="Salir" outcome="/ingreso.xhtml"></p:button>
+						</h:panelGrid>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<div style='text-align: left'>
+					<ui:insert name="recepcion" />
+				</div>
+			</p:card>
+		</center>
+	</h:body>
+</f:view>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta charset="UTF-8"></meta>
+	<title>Insert title here</title>
+</h:head>
+<h:body>
+	<ui:composition template="/administracion.xhtml">
+		<ui:define name="administracion">
+			<h:form id="Combo">
+				<p:growl id="messages" showDetail="false" />
+				<p:toolbar>
+					<p:toolbarGroup>
+						<span style="font-weight: bold">COMBOS</span>
+					</p:toolbarGroup>
+					<p:toolbarGroup>
+						<p:commandButton value="Nuevo Combo" icon="pi pi-plus"
+							oncomplete="PF('nuevoCombo').show();"
+							styleClass="ui-button-success">
+							<p:resetInput target="Combo" />
+						</p:commandButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:dataTable id="dt-combos" var="combo" widgetVar="dtCombos"
+					value="#{comboVista.listarCombos}" rowKey="#{combo.idCombo}"
+					reflow="false" styleClass="combos-table">
+					<p:column headerText="Nombre" sortBy="#{combo.nombre}"
+						filterBy="#{combo.nombre}">
+						<h:outputText value="#{combo.nombre}" />
+					</p:column>
+					<p:column headerText="Descripción" sortBy="#{combo.descripcion}"
+						filterBy="#{combo.descripcion}">
+						<h:outputText value="#{combo.descripcion}" />
+					</p:column>
+					<p:column headerText="Precio" sortBy="#{combo.precio}"
+						filterBy="#{combo.precio}">
+						<h:outputText value="#{combo.precio}" />
+					</p:column>
+					<p:column exportable="false">
+						<p:commandButton icon="pi pi-pencil" update="Combo"
+							oncomplete="PF('nuevoCombo').show()"
+							styleClass="edit-button rounded-button ui-button-success"
+							process="@this">
+							<f:setPropertyActionListener value="#{combo}"
+								target="#{comboVista.nuevoCombo}" />
+							<p:resetInput target="Combo" />
+						</p:commandButton>
+						<p:commandButton class="ui-button-warning rounded-button"
+							icon="pi pi-trash" process="@this" update="Combo"
+							oncomplete="PF('eliminarCombo').show()">
+							<f:setPropertyActionListener value="#{combo}"
+								target="#{comboVista.eliminarCombo}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				<p:dialog id="dlgCombo" widgetVar="nuevoCombo"
+					header="Detalles del combo" modal="true" showEffect="fade"
+					resizable="flase">
+					<p:outputPanel class="ui-fluid">
+						<div class="p-field">
+							<p:outputLabel>Nombre del combo</p:outputLabel>
+
+							<p:inputText id="nombre" value="#{comboVista.nuevoCombo.nombre}" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Descripcion</p:outputLabel>
+							<p:inputTextarea id="descripcion"
+								value="#{comboVista.nuevoCombo.descripcion}" />
+						</div>
+						<div class="p-field p-col">
+							<p:outputLabel>Precio</p:outputLabel>
+							<p:inputNumber id="price" value="#{comboVista.nuevoCombo.precio}"
+								symbol=" USD" symbolPosition="s" decimalSeparator="."
+								thousandSeparator="" />
+						</div>
+						<div class="p-field">
+							<p:outputLabel>Gráfico</p:outputLabel>
+							<p:inputText id="grafico"
+								value="#{platilloVista.nuevoPlatillo.grafico}" />
+						</div>
+					</p:outputPanel>
+
+					<f:facet name="footer">
+						<p:commandButton update="Combo" value="Guardar" icon="pi pi-check"
+							action="#{comboVista.insertarCombo}"
+							oncomplete="PF('nuevoCombo').hide()" />
+						<p:commandButton value="Cancelar" icon="pi pi-times"
+						action="#{comboVista.limpiar}" update="dlgCombo"
+							onclick="PF('nuevoCombo').hide()" class="ui-button-secondary" />
+					</f:facet>
+				</p:dialog>
+				<p:confirmDialog widgetVar="eliminarCombo" showEffect="fade"
+					message="¿Desea borrar el combo?" header="Confirmar"
+					severity="warn">
+					<p:commandButton value="Si" action="#{comboVista.eliminarCombo}"
+						oncomplete="PF('eliminarCombo').hide()" icon="pi pi-check"
+						update="Combo" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-button-secondary"
+						onclick="PF('eliminarCombo').hide()" icon="pi pi-times"
+						update="Combo" />
+				</p:confirmDialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

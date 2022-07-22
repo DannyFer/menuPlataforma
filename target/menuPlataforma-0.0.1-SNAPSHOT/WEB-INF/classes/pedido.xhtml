@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<f:view contentType="text/html">
+	<h:head>
+		<f:facet name="first">
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>Menú Interactivo</title>
+		</f:facet>
+	</h:head>
+	<style>
+html * {
+	font-size: 13px !important;
+}
+</style>
+	<h:body>
+		<ui:composition template="/recepcion.xhtml">
+			<ui:define name="recepcion">
+				<h:form id="pedido">
+					<p:splitter>
+						<p:splitterPanel>
+							<p:card>
+								<p:toolbar>
+									<p:toolbarGroup>
+										<span style="font-weight: bold">Buscar o Registrar
+											Cliente</span>
+										<p:column />
+									</p:toolbarGroup>
+									<p:toolbarGroup>
+										<h:panelGrid columns="3">
+											<p:column />
+											<p:commandButton value="Nuevo Pedido" action="#{pedidoVista.limpiarPedido()}" update="@form" />
+										</h:panelGrid>
+									</p:toolbarGroup>
+								</p:toolbar>
+								<p:growl id="msg" showDetail="false" showSummary="true" />
+								<p:panel id="basic">
+									<h:panelGrid columns="4" id="cliente">
+										<p:outputLabel value="Correo electrónico *" />
+										<p:inputText id="correo" value="#{pedidoVista.cliente.correo}">
+											<p:ajax process="@this"></p:ajax>
+										</p:inputText>
+										<p:commandButton icon="pi pi-search"
+											action="#{pedidoVista.buscarCliente()}" process="@this"
+											update=":pedido:basic :pedido:msg"
+											styleClass="rounded-button ui-button-success" />
+										<p:column />
+										<p:outputLabel value="Nómbre *" />
+										<p:inputText id="nombres"
+											value="#{pedidoVista.cliente.nombre}" />
+										<p:outputLabel value="Apellido *" />
+										<p:inputText id="apellidos"
+											value="#{pedidoVista.cliente.apellido}" />
+										<p:outputLabel value="Teléfono *" />
+										<p:inputMask id="telefono"
+											value="#{pedidoVista.cliente.telefono}" mask="9999999999"
+											validateMask="true" />
+										<p:outputLabel value="Contraseña" rendered="#{pedidoVista.registrarCliente}" />
+										<p:inputText id="contraseña" rendered="#{pedidoVista.registrarCliente}"
+											value="#{pedidoVista.contrasenia}" />
+										<p:commandButton value="Registrar"
+											rendered="#{pedidoVista.registrarCliente}"
+											action="#{pedidoVista.insertarCliente}" update="@all" />
+									</h:panelGrid>
+									<h:panelGrid columns="3" id="pnlDetalle">
+										<p:dataTable id="detalles" var="detalle" lazy="false"
+											value="#{pedidoVista.listarDetalles}">
+											<p:column headerText="Nombre">
+												<h:outputText value="#{detalle.nombre}" />
+											</p:column>
+											<p:column headerText="Cantidad">
+												<p:inputNumber value="#{detalle.cantidad}" decimalPlaces="0">
+													<p:ajax event="change"
+														listener="#{pedidoVista.calcularPrecio(detalle)}"
+														update=":pedido:detalles :pedido:pnlTotal"></p:ajax>
+												</p:inputNumber>
+											</p:column>
+											<p:column headerText="Precio">
+												<h:outputText value="#{detalle.precio}" />
+											</p:column>
+										</p:dataTable>
+									</h:panelGrid>
+									<div align="right">
+										<h:panelGrid id="pnlTotal" columns="2"
+											style='text-align: right'>
+											<p:outputLabel value="Subtotal" />
+											<p:inputText value="#{pedidoVista.subtotal}" />
+											<p:outputLabel value="IVA" />
+											<p:inputText value="#{pedidoVista.iva}" />
+											<p:outputLabel value="Total" />
+											<p:inputNumber value="#{pedidoVista.total}" decimalPlaces="2" />
+											<p:column />
+											<p:commandButton value="Guardar" process="@form"
+												actionListener="#{pedidoVista.guardar()}"></p:commandButton>
+										</h:panelGrid>
+									</div>
+								</p:panel>
+							</p:card>
+						</p:splitterPanel>
+						<p:splitterPanel>
+							<p:dataTable id="dt-platillos" var="platillo"
+								widgetVar="dtPlatillos" value="#{platilloVista.listarPlatillos}">
+								<p:column headerText="Nombre Platillo"
+									sortBy="#{platillo.nombre}">
+									<h:outputText value="#{platillo.nombre}" />
+								</p:column>
+								<p:column headerText="Descripción"
+									sortBy="#{platillo.descripcion}">
+									<h:outputText value="#{platillo.descripcion}" />
+								</p:column>
+								<p:column headerText="Precio Platillo"
+									sortBy="#{platillo.precio}">
+									<h:outputText value="#{platillo.precio}" />
+								</p:column>
+								<p:column>
+									<p:commandButton
+										action="#{pedidoVista.agregarPlatillos(platillo)}"
+										value="Agregar" update=":pedido:detalles :pedido:pnlTotal" />
+								</p:column>
+							</p:dataTable>
+							<p:dataTable id="dt-combos" var="combo" widgetVar="dtCombos"
+								value="#{comboVista.listarCombos}">
+								<p:column headerText="Nombre Combo" sortBy="#{combo.nombre}">
+									<h:outputText value="#{combo.nombre}" />
+								</p:column>
+								<p:column headerText="Descripción" sortBy="#{combo.descripcion}">
+									<h:outputText value="#{combo.descripcion}" />
+								</p:column>
+								<p:column headerText="Precio Combo" sortBy="#{combo.precio}">
+									<h:outputText value="#{combo.precio}" />
+								</p:column>
+								<p:column>
+									<p:commandButton action="#{pedidoVista.agregarCombos(combo)}"
+										value="Agregar" update=":pedido:detalles :pedido:pnlTotal" />
+								</p:column>
+							</p:dataTable>
+						</p:splitterPanel>
+					</p:splitter>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</h:body>
+</f:view>
+</html>

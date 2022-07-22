@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta charset="UTF-8"></meta>
+	<title>Insert title here</title>
+</h:head>
+<h:body>
+	<ui:composition template="/administracion.xhtml">
+		<ui:define name="administracion">
+			<h:form id="Categoria">
+				<p:growl id="messages" showDetail="false" />
+				<p:toolbar>
+					<p:toolbarGroup>
+						<span style="font-weight: bold">OTROS</span>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:splitter>
+					<p:splitterPanel layout="vertical">
+						<p:toolbar>
+							<p:toolbarGroup>
+								<span style="font-weight: bold">CATEGORIAS</span>
+							</p:toolbarGroup>
+							<p:toolbarGroup>
+								<p:commandButton value="Nueva Categoria" icon="pi pi-plus"
+									oncomplete="PF('nuevoCategoria').show();"
+									styleClass="ui-button-success">
+									<p:resetInput target="Categoria" />
+								</p:commandButton>
+							</p:toolbarGroup>
+						</p:toolbar>
+						<p:dataTable id="dt-categorias" var="categoria"
+							widgetVar="dtCategorias"
+							value="#{categoriaVista.listarCategorias}"
+							rowKey="#{categoria.idCategoria}" reflow="false"
+							styleClass="categorias-table">
+							<p:column headerText="Nombre" sortBy="#{categoria.nombre}">
+								<h:outputText value="#{categoria.nombre}" />
+							</p:column>
+							<p:column headerText="Descripción"
+								sortBy="#{categoria.descripcion}">
+								<h:outputText value="#{categoria.descripcion}" />
+							</p:column>
+							<p:column exportable="false">
+								<p:commandButton icon="pi pi-pencil" update="Categoria"
+									oncomplete="PF('nuevoCategoria').show()"
+									styleClass="edit-button rounded-button ui-button-success"
+									process="@this">
+									<f:setPropertyActionListener value="#{categoria}"
+										target="#{categoriaVista.nuevoCategoria}" />
+									<p:resetInput target="Categoria" />
+								</p:commandButton>
+								<p:commandButton class="ui-button-warning rounded-button"
+									icon="pi pi-trash" process="@this" update="Categoria"
+									oncomplete="PF('eliminarCategoria').show()">
+									<f:setPropertyActionListener value="#{categoria}"
+										target="#{categoriaVista.eliminarCategoria}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+						<p:dialog id="dlgCategoria" widgetVar="nuevoCategoria"
+							header="Detalles del categoria" modal="true" showEffect="fade"
+							resizable="flase">
+							<p:outputPanel class="ui-fluid">
+								<div class="p-field">
+									<p:outputLabel>Nombre de la categoria</p:outputLabel>
+									<p:inputText id="nombre"
+										value="#{categoriaVista.nuevoCategoria.nombre}" />
+								</div>
+								<div class="p-field">
+									<p:outputLabel>Descripcion</p:outputLabel>
+									<p:inputTextarea id="descripcion"
+										value="#{categoriaVista.nuevoCategoria.descripcion}" />
+								</div>
+							</p:outputPanel>
+							<f:facet name="footer">
+								<p:commandButton update="Categoria" value="Guardar"
+									icon="pi pi-check" action="#{categoriaVista.insertarCategoria}"
+									oncomplete="PF('nuevoCategoria').hide()" />
+								<p:commandButton value="Cancelar" icon="pi pi-times"
+									onclick="PF('nuevoCategoria').hide()"
+									class="ui-button-secondary" />
+							</f:facet>
+						</p:dialog>
+						<p:confirmDialog widgetVar="eliminarCategoria" showEffect="fade"
+							message="¿Desea borrar el categoria?" header="Confirmar"
+							severity="warn">
+							<p:commandButton value="Si"
+								action="#{categoriaVista.eliminarCategoria}"
+								oncomplete="PF('eliminarCategoria').hide()" icon="pi pi-check"
+								update="Categoria" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-button-secondary"
+								onclick="PF('eliminarCategoria').hide()" icon="pi pi-times"
+								update="Categoria" />
+						</p:confirmDialog>
+					</p:splitterPanel>
+					<p:splitterPanel>
+						<p:panel header="Valor actual del IVA">
+							<h:panelGrid columns="3" id="iva">
+								<p:outputLabel value="Ingrese el valor del Iva" />
+								<p:inputText value="#{ivaVista.nuevoIva.iva}" />
+								<p:commandButton value="Actualizar"
+									action="#{ivaVista.insertarIva}" update="Categoria" />
+								<p:column />
+							</h:panelGrid>
+						</p:panel>
+					</p:splitterPanel>
+				</p:splitter>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
